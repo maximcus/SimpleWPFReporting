@@ -143,13 +143,14 @@ namespace SimpleWPFReporting
         /// Prints report using reportContainer
         /// </summary>
         /// <param name="reportContainer">StackPanel containing report elements to be printed sequentially</param>
+        /// <param name="dataContext">Data Context used in report</param> 
         /// <param name="margin">By default you should use 
         ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
         ///     report initial dimensions
         /// </param>
-        /// <param name="dataContext">Data Context used in report</param>
+        /// <param name="orientation">Landscape or Portrait orientation</param> 
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void PrintReport(StackPanel reportContainer, double margin, object dataContext, DataTemplate reportHeaderDataTemplate = null)
+        public static void PrintReport(StackPanel reportContainer, object dataContext, double margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
         {
             PrintDialog printDialog = new PrintDialog();
 
@@ -157,7 +158,7 @@ namespace SimpleWPFReporting
 
             if (result != true) return;
 
-            Size reportSize = GetReportSize(reportContainer, margin, printDialog);
+            Size reportSize = GetReportSize(reportContainer, margin, orientation, printDialog);
 
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
@@ -180,13 +181,14 @@ namespace SimpleWPFReporting
         /// Export as report to PDF
         /// </summary>
         /// <param name="reportContainer">StackPanel containing report elements to be split into pages sequentially</param>
+        /// <param name="dataContext">Data Context used in report</param> 
         /// <param name="margin">By default you should use 
         ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
         ///     report initial dimensions
         /// </param>
-        /// <param name="dataContext">Data Context used in report</param>
+        /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void ExportReportAsPdf(StackPanel reportContainer, double margin, object dataContext, DataTemplate reportHeaderDataTemplate = null)
+        public static void ExportReportAsPdf(StackPanel reportContainer, object dataContext, double margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -198,7 +200,7 @@ namespace SimpleWPFReporting
 
             if (result != true) return;
 
-            Size reportSize = GetReportSize(reportContainer, margin);
+            Size reportSize = GetReportSize(reportContainer, margin, orientation);
 
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
@@ -275,13 +277,19 @@ namespace SimpleWPFReporting
             return ReportPages;
         }
 
-        private static Size GetReportSize(StackPanel reportContainer, double margin, PrintDialog printDialog = null)
+        private static Size GetReportSize(StackPanel reportContainer, double margin, ReportOrientation orientation, PrintDialog printDialog = null)
         {
             if (printDialog == null)
                 printDialog = new PrintDialog();
 
-            double reportWidth = reportContainer.ActualWidth + margin*2;
-            double reportHeight = (reportWidth/printDialog.PrintableAreaHeight)*printDialog.PrintableAreaWidth;
+            double reportWidth = reportContainer.ActualWidth + margin * 2;
+
+            double reportHeight;
+            if (orientation == ReportOrientation.Portrait)
+                reportHeight = (reportWidth / printDialog.PrintableAreaWidth) * printDialog.PrintableAreaHeight;
+            else
+                reportHeight = (reportWidth / printDialog.PrintableAreaHeight) * printDialog.PrintableAreaWidth;
+
             return new Size(reportWidth, reportHeight);
         }
 
