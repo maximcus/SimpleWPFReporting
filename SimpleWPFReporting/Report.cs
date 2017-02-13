@@ -142,14 +142,14 @@ namespace SimpleWPFReporting
         /// <summary>
         /// Prints report using reportContainer
         /// </summary>
-        /// <param name="reportHeaderDataTemplate"></param>
         /// <param name="reportContainer">StackPanel containing report elements to be printed sequentially</param>
         /// <param name="margin">By default you should use 
         ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
         ///     report initial dimensions
         /// </param>
         /// <param name="dataContext">Data Context used in report</param>
-        public static void PrintReport(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, double margin, object dataContext)
+        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        public static void PrintReport(StackPanel reportContainer, double margin, object dataContext, DataTemplate reportHeaderDataTemplate = null)
         {
             PrintDialog printDialog = new PrintDialog();
 
@@ -176,7 +176,17 @@ namespace SimpleWPFReporting
             }
         }
 
-        public static void ExportReportAsPdf(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, double margin, object dataContext)
+        /// <summary>
+        /// Export as report to PDF
+        /// </summary>
+        /// <param name="reportContainer">StackPanel containing report elements to be split into pages sequentially</param>
+        /// <param name="margin">By default you should use 
+        ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
+        ///     report initial dimensions
+        /// </param>
+        /// <param name="dataContext">Data Context used in report</param>
+        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        public static void ExportReportAsPdf(StackPanel reportContainer, double margin, object dataContext, DataTemplate reportHeaderDataTemplate = null)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -284,12 +294,15 @@ namespace SimpleWPFReporting
                 Resources = reportContainer.Resources,
                 DataContext = dataContext
             };
-            
-            UIElement reportHeader = reportHeaderDataTemplate.LoadContent() as UIElement;
 
-            if (reportHeader != null)
-                reportPageContainer.Children.Add(reportHeader);
-            else throw new Exception($"{nameof(reportHeader)} is null");
+            if (reportHeaderDataTemplate != null)
+            {
+                UIElement reportHeader = reportHeaderDataTemplate.LoadContent() as UIElement;
+
+                if (reportHeader != null)
+                    reportPageContainer.Children.Add(reportHeader);
+                else throw new Exception($"Couldn't cast content of {nameof(reportHeaderDataTemplate)} to {nameof(UIElement)}");
+            }
 
             return reportPageContainer;
         }
