@@ -147,7 +147,14 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void PrintReport(StackPanel reportContainer, object dataContext, Thickness margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
+        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        public static void PrintReport(
+            StackPanel reportContainer, 
+            object dataContext, 
+            Thickness margin, 
+            ReportOrientation orientation, 
+            DataTemplate reportHeaderDataTemplate = null, 
+            DataTemplate reportFooterDataTemplate = null)
         {
             PrintDialog printDialog = new PrintDialog();
 
@@ -160,7 +167,7 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<StackPanel> ReportPages = GetReportPages(reportHeaderDataTemplate, reportContainer, margin, ReportElements, reportSize, dataContext);
+            List<StackPanel> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
 
             try
             {
@@ -182,7 +189,14 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void ExportReportAsPdf(StackPanel reportContainer, object dataContext, Thickness margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
+        /// <param name="reportFooterDataTemplate">Optional footer for each page</param> 
+        public static void ExportReportAsPdf(
+            StackPanel reportContainer, 
+            object dataContext, 
+            Thickness margin, 
+            ReportOrientation orientation, 
+            DataTemplate reportHeaderDataTemplate = null, 
+            DataTemplate reportFooterDataTemplate = null)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -199,7 +213,7 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<StackPanel> ReportPages = GetReportPages(reportHeaderDataTemplate, reportContainer, margin, ReportElements, reportSize, dataContext);
+            List<StackPanel> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
 
             FixedDocument fixedDocument = new FixedDocument();
 
@@ -245,9 +259,22 @@ namespace SimpleWPFReporting
             }
         }
 
-        private static List<StackPanel> GetReportPages(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, Thickness margin, List<FrameworkElement> ReportElements, Size reportSize, object dataContext)
+        private static List<StackPanel> GetReportPages(
+            StackPanel reportContainer, 
+            List<FrameworkElement> ReportElements, 
+            object dataContext, 
+            Thickness margin, 
+            Size reportSize, 
+            DataTemplate reportHeaderDataTemplate, 
+            DataTemplate reportFooterDataTemplate)
         {
-            List<StackPanel> ReportPages = new List<StackPanel> {GetReportPageContainer(reportHeaderDataTemplate, reportContainer, margin, dataContext) };
+            int pageNumber = 1;
+
+            List<StackPanel> ReportPages = 
+                new List<StackPanel>
+                {
+                    GetReportPageContainer(reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber)
+                };
 
             foreach (FrameworkElement reportVisualElement in ReportElements)
             {
@@ -255,10 +282,12 @@ namespace SimpleWPFReporting
                     .Cast<FrameworkElement>()
                     .Sum(elm => GetActualHeightPlusMargin(elm)) + GetActualHeightPlusMargin(reportVisualElement) > reportSize.Height - margin.Top - margin.Bottom)
                 {
-                    ReportPages.Add(GetReportPageContainer(reportHeaderDataTemplate, reportContainer, margin, dataContext));
+                    pageNumber++;
+
+                    ReportPages.Add(GetReportPageContainer(reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber));
                 }
 
-                ReportPages.Last().Children.Add(reportVisualElement);
+                ReportPages.Last().Children.Insert(ReportPages.Last().Children.Count - (reportFooterDataTemplate == null ? 0 : 1), reportVisualElement);
             }
 
             foreach (StackPanel reportPage in ReportPages)
@@ -292,7 +321,7 @@ namespace SimpleWPFReporting
             return new Size(reportWidth, reportHeight);
         }
 
-        private static StackPanel GetReportPageContainer(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, Thickness margin, object dataContext)
+        private static StackPanel GetReportPageContainer(StackPanel reportContainer, Thickness margin, object dataContext, DataTemplate reportHeaderDataTemplate, DataTemplate reportFooterDataTemplate, int pageNumber)
         {
             StackPanel reportPageContainer = new StackPanel
             {
@@ -304,14 +333,37 @@ namespace SimpleWPFReporting
 
             if (reportHeaderDataTemplate != null)
             {
-                UIElement reportHeader = reportHeaderDataTemplate.LoadContent() as UIElement;
+                FrameworkElement reportHeader = reportHeaderDataTemplate.LoadContent() as FrameworkElement;
 
                 if (reportHeader != null)
                     reportPageContainer.Children.Add(reportHeader);
-                else throw new Exception($"Couldn't cast content of {nameof(reportHeaderDataTemplate)} to {nameof(UIElement)}");
+                else
+                    throw new Exception($"Couldn't cast content of {nameof(reportHeaderDataTemplate)} to {nameof(FrameworkElement)}");
+
+                AddPageNumberResource(reportHeader, pageNumber);
+            }
+
+            if (reportFooterDataTemplate != null)
+            {
+                FrameworkElement reportFooter = reportFooterDataTemplate.LoadContent() as FrameworkElement;
+
+                if (reportFooter != null)
+                    reportPageContainer.Children.Add(reportFooter);
+                else
+                    throw new Exception($"Couldn't cast content of {nameof(reportFooterDataTemplate)} to {nameof(FrameworkElement)}");
+
+                AddPageNumberResource(reportFooter, pageNumber);
             }
 
             return reportPageContainer;
+        }
+
+        private static void AddPageNumberResource(FrameworkElement element, int pageNumber)
+        {
+            if (element.Resources.Contains("PageNumber"))
+                element.Resources["PageNumber"] = pageNumber.ToString();
+            else
+                element.Resources.Add("PageNumber", pageNumber.ToString());
         }
 
         private static void ForEach<T>(this IEnumerable<T> enumeration, Action<T, int> action)
