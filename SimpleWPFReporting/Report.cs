@@ -167,15 +167,15 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<StackPanel> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
+            List<ReportPage> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
 
             try
             {
-                ReportPages.ForEach((reportPage, index) => printDialog.PrintVisual(reportPage, $"Карточка Точки {index + 1}"));
+                ReportPages.ForEach((reportPage, index) => printDialog.PrintVisual(reportPage.LayoutRoot, $"Карточка Точки {index + 1}"));
             }
             finally
             {
-                ReportPages.ForEach(reportPage => reportPage.Children.Clear());
+                ReportPages.ForEach(reportPage => reportPage.ClearChildren());
                 ReportElements.ForEach(elm => reportContainer.Children.Add(elm));
                 reportContainer.UpdateLayout();
             }
@@ -213,7 +213,7 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<StackPanel> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
+            List<ReportPage> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
 
             FixedDocument fixedDocument = new FixedDocument();
 
@@ -225,9 +225,10 @@ namespace SimpleWPFReporting
                     XpsDocument xpsDocument = new XpsDocument(package);
                     XpsDocumentWriter xpsDocumentWriter = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
 
-                    foreach (StackPanel reportPage in ReportPages)
+                    foreach (Grid reportPage in ReportPages.Select(reportPage => reportPage.LayoutRoot))
                     {
                         reportPage.Width = reportPage.ActualWidth;
+                        reportPage.Height = reportPage.ActualHeight;
 
                         FixedPage newFixedPage = new FixedPage();
                         newFixedPage.Children.Add(reportPage);
@@ -253,13 +254,13 @@ namespace SimpleWPFReporting
             }
             finally
             {
-                ReportPages.ForEach(reportPage => reportPage.Children.Clear());
+                ReportPages.ForEach(reportPage => reportPage.ClearChildren());
                 ReportElements.ForEach(elm => reportContainer.Children.Add(elm));
                 reportContainer.UpdateLayout();
             }
         }
 
-        private static List<StackPanel> GetReportPages(
+        private static List<ReportPage> GetReportPages(
             StackPanel reportContainer, 
             List<FrameworkElement> ReportElements, 
             object dataContext, 
@@ -270,31 +271,29 @@ namespace SimpleWPFReporting
         {
             int pageNumber = 1;
 
-            List<StackPanel> ReportPages = 
-                new List<StackPanel>
+            List<ReportPage> ReportPages = 
+                new List<ReportPage>
                 {
-                    GetReportPageContainer(reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber)
+                    new ReportPage(reportSize, reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber)
                 };
 
             foreach (FrameworkElement reportVisualElement in ReportElements)
             {
-                if (ReportPages.Last().Children
-                    .Cast<FrameworkElement>()
-                    .Sum(elm => GetActualHeightPlusMargin(elm)) + GetActualHeightPlusMargin(reportVisualElement) > reportSize.Height - margin.Top - margin.Bottom)
+                if (ReportPages.Last().GetChildrenActualHeight() + GetActualHeightPlusMargin(reportVisualElement) > reportSize.Height - margin.Top - margin.Bottom)
                 {
                     pageNumber++;
 
-                    ReportPages.Add(GetReportPageContainer(reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber));
+                    ReportPages.Add(new ReportPage(reportSize, reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber));
                 }
 
-                ReportPages.Last().Children.Insert(ReportPages.Last().Children.Count - (reportFooterDataTemplate == null ? 0 : 1), reportVisualElement);
+                ReportPages.Last().AddElement(reportVisualElement);
             }
 
-            foreach (StackPanel reportPage in ReportPages)
+            foreach (ReportPage reportPage in ReportPages)
             {
-                reportPage.Measure(reportSize);
-                reportPage.Arrange(new Rect(reportSize));
-                reportPage.UpdateLayout();
+                reportPage.LayoutRoot.Measure(reportSize);
+                reportPage.LayoutRoot.Arrange(new Rect(reportSize));
+                reportPage.LayoutRoot.UpdateLayout();
             }
 
             return ReportPages;
@@ -319,51 +318,6 @@ namespace SimpleWPFReporting
                 reportHeight = (reportWidth / printDialog.PrintableAreaHeight) * printDialog.PrintableAreaWidth;
 
             return new Size(reportWidth, reportHeight);
-        }
-
-        private static StackPanel GetReportPageContainer(StackPanel reportContainer, Thickness margin, object dataContext, DataTemplate reportHeaderDataTemplate, DataTemplate reportFooterDataTemplate, int pageNumber)
-        {
-            StackPanel reportPageContainer = new StackPanel
-            {
-                Margin = margin,
-                Background = reportContainer.Background,
-                Resources = reportContainer.Resources,
-                DataContext = dataContext
-            };
-
-            if (reportHeaderDataTemplate != null)
-            {
-                FrameworkElement reportHeader = reportHeaderDataTemplate.LoadContent() as FrameworkElement;
-
-                if (reportHeader != null)
-                    reportPageContainer.Children.Add(reportHeader);
-                else
-                    throw new Exception($"Couldn't cast content of {nameof(reportHeaderDataTemplate)} to {nameof(FrameworkElement)}");
-
-                AddPageNumberResource(reportHeader, pageNumber);
-            }
-
-            if (reportFooterDataTemplate != null)
-            {
-                FrameworkElement reportFooter = reportFooterDataTemplate.LoadContent() as FrameworkElement;
-
-                if (reportFooter != null)
-                    reportPageContainer.Children.Add(reportFooter);
-                else
-                    throw new Exception($"Couldn't cast content of {nameof(reportFooterDataTemplate)} to {nameof(FrameworkElement)}");
-
-                AddPageNumberResource(reportFooter, pageNumber);
-            }
-
-            return reportPageContainer;
-        }
-
-        private static void AddPageNumberResource(FrameworkElement element, int pageNumber)
-        {
-            if (element.Resources.Contains("PageNumber"))
-                element.Resources["PageNumber"] = pageNumber.ToString();
-            else
-                element.Resources.Add("PageNumber", pageNumber.ToString());
         }
 
         private static void ForEach<T>(this IEnumerable<T> enumeration, Action<T, int> action)
