@@ -140,17 +140,14 @@ namespace SimpleWPFReporting
         }
 
         /// <summary>
-        /// Prints report using reportContainer
+        /// Divides elements of reportContainer into pages and prints them
         /// </summary>
-        /// <param name="reportContainer">StackPanel containing report elements to be printed sequentially</param>
-        /// <param name="dataContext">Data Context used in report</param> 
-        /// <param name="margin">By default you should use 
-        ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
-        ///     report initial dimensions
-        /// </param>
-        /// <param name="orientation">Landscape or Portrait orientation</param> 
+        /// <param name="reportContainer">StackPanel containing report elements</param>
+        /// <param name="dataContext">Data Context used in the report</param>
+        /// <param name="margin">Margin of a report page</param>
+        /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void PrintReport(StackPanel reportContainer, object dataContext, double margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
+        public static void PrintReport(StackPanel reportContainer, object dataContext, Thickness margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
         {
             PrintDialog printDialog = new PrintDialog();
 
@@ -178,17 +175,14 @@ namespace SimpleWPFReporting
         }
 
         /// <summary>
-        /// Export as report to PDF
+        /// Divides elements of reportContainer into pages and exports them as PDF
         /// </summary>
-        /// <param name="reportContainer">StackPanel containing report elements to be split into pages sequentially</param>
-        /// <param name="dataContext">Data Context used in report</param> 
-        /// <param name="margin">By default you should use 
-        ///     reportContainer.Margin.Left = reportContainer.Margin.Right to preserve
-        ///     report initial dimensions
-        /// </param>
+        /// <param name="reportContainer">StackPanel containing report elements</param>
+        /// <param name="dataContext">Data Context used in the report</param> 
+        /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        public static void ExportReportAsPdf(StackPanel reportContainer, object dataContext, double margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
+        public static void ExportReportAsPdf(StackPanel reportContainer, object dataContext, Thickness margin, ReportOrientation orientation, DataTemplate reportHeaderDataTemplate = null)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -251,7 +245,7 @@ namespace SimpleWPFReporting
             }
         }
 
-        private static List<StackPanel> GetReportPages(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, double margin, List<FrameworkElement> ReportElements, Size reportSize, object dataContext)
+        private static List<StackPanel> GetReportPages(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, Thickness margin, List<FrameworkElement> ReportElements, Size reportSize, object dataContext)
         {
             List<StackPanel> ReportPages = new List<StackPanel> {GetReportPageContainer(reportHeaderDataTemplate, reportContainer, margin, dataContext) };
 
@@ -259,7 +253,7 @@ namespace SimpleWPFReporting
             {
                 if (ReportPages.Last().Children
                     .Cast<FrameworkElement>()
-                    .Sum(elm => elm.ActualHeight) + reportVisualElement.ActualHeight > reportSize.Height - margin*3)
+                    .Sum(elm => GetActualHeightPlusMargin(elm)) + GetActualHeightPlusMargin(reportVisualElement) > reportSize.Height - margin.Top - margin.Bottom)
                 {
                     ReportPages.Add(GetReportPageContainer(reportHeaderDataTemplate, reportContainer, margin, dataContext));
                 }
@@ -277,12 +271,17 @@ namespace SimpleWPFReporting
             return ReportPages;
         }
 
-        private static Size GetReportSize(StackPanel reportContainer, double margin, ReportOrientation orientation, PrintDialog printDialog = null)
+        private static double GetActualHeightPlusMargin(FrameworkElement elm)
+        {
+            return elm.ActualHeight + elm.Margin.Top + elm.Margin.Bottom;
+        }
+
+        private static Size GetReportSize(StackPanel reportContainer, Thickness margin, ReportOrientation orientation, PrintDialog printDialog = null)
         {
             if (printDialog == null)
                 printDialog = new PrintDialog();
 
-            double reportWidth = reportContainer.ActualWidth + margin * 2;
+            double reportWidth = reportContainer.ActualWidth + margin.Left + margin.Right;
 
             double reportHeight;
             if (orientation == ReportOrientation.Portrait)
@@ -293,11 +292,11 @@ namespace SimpleWPFReporting
             return new Size(reportWidth, reportHeight);
         }
 
-        private static StackPanel GetReportPageContainer(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, double margin, object dataContext)
+        private static StackPanel GetReportPageContainer(DataTemplate reportHeaderDataTemplate, StackPanel reportContainer, Thickness margin, object dataContext)
         {
             StackPanel reportPageContainer = new StackPanel
             {
-                Margin = new Thickness(margin),
+                Margin = margin,
                 Background = reportContainer.Background,
                 Resources = reportContainer.Resources,
                 DataContext = dataContext
