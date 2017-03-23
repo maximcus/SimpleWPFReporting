@@ -28,7 +28,7 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 `object dataContext` is the data context of your report.
 
-`Thickness margin` is the margin applied to every report page. Both of the methods have overloads without the margin argument. They use `Thickness(25)` as default margin.
+`Thickness margin` is the margin applied to every report page. Both of the methods have overloads without the margin argument. They use `Thickness(25)` as the default margin.
 
 `ReportOrientation orientation` is the orientation (`Portrait` or `Landscape`) of your report. 
 
@@ -36,15 +36,15 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 `ResourceDictionary resourceDictionary` contains all resources used in the report.
 
-`Brush backgroundBrush` is the background brush for every page of the report.
+`Brush backgroundBrush` is the background brush of the report.
 
 `DataTemplate reportHeaderDataTemplate` is the `DataTemplate` used to create a header for every page of the report.
 
-`bool headerOnlyOnTheFirstPage` allows you to use header only on the first page of the report. (default is false)
+`bool headerOnlyOnTheFirstPage` allows you to use the header only on the first page of the report. (default is false)
 
 `DataTemplate reportFooterDataTemplate`  is the `DataTemplate` used to create a footer for every page of the report.
 
-`bool footerStartsFromTheSecondPage` allows you to not use footer on the first page of the report. (default is false)
+`bool footerStartsFromTheSecondPage` allows you to not use the footer on the first page of the report. (default is false)
 
 ### Page number
 
