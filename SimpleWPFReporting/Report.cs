@@ -147,14 +147,18 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void PrintReport(
             StackPanel reportContainer, 
             object dataContext, 
             Thickness margin, 
             ReportOrientation orientation, 
-            DataTemplate reportHeaderDataTemplate = null, 
-            DataTemplate reportFooterDataTemplate = null)
+            DataTemplate reportHeaderDataTemplate = null,
+            bool headerOnlyOnTheFirstPage = false,
+            DataTemplate reportFooterDataTemplate = null,
+            bool footerStartsFromTheSecondPage = false)
         {
             PrintDialog printDialog = new PrintDialog();
 
@@ -167,7 +171,17 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<ReportPage> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
+            List<ReportPage> ReportPages = 
+                GetReportPages(
+                    reportContainer: reportContainer, 
+                    ReportElements: ReportElements, 
+                    dataContext: dataContext, 
+                    margin: margin, 
+                    reportSize: reportSize, 
+                    reportHeaderDataTemplate: reportHeaderDataTemplate, 
+                    headerOnlyOnTheFirstPage: headerOnlyOnTheFirstPage, 
+                    reportFooterDataTemplate: reportFooterDataTemplate, 
+                    footerStartsFromTheSecondPage: footerStartsFromTheSecondPage);
 
             try
             {
@@ -189,14 +203,18 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
-        /// <param name="reportFooterDataTemplate">Optional footer for each page</param> 
+        /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
+        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void ExportReportAsPdf(
             StackPanel reportContainer, 
             object dataContext, 
             Thickness margin, 
             ReportOrientation orientation, 
-            DataTemplate reportHeaderDataTemplate = null, 
-            DataTemplate reportFooterDataTemplate = null)
+            DataTemplate reportHeaderDataTemplate = null,
+            bool headerOnlyOnTheFirstPage = false,
+            DataTemplate reportFooterDataTemplate = null,
+            bool footerStartsFromTheSecondPage = false)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -213,7 +231,17 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements = new List<FrameworkElement>(reportContainer.Children.Cast<FrameworkElement>());
             reportContainer.Children.Clear(); //to avoid exception "Specified element is already the logical child of another element."
 
-            List<ReportPage> ReportPages = GetReportPages(reportContainer, ReportElements, dataContext, margin, reportSize, reportHeaderDataTemplate, reportFooterDataTemplate);
+            List<ReportPage> ReportPages = 
+                GetReportPages(
+                    reportContainer, 
+                    ReportElements, 
+                    dataContext, 
+                    margin, 
+                    reportSize, 
+                    reportHeaderDataTemplate, 
+                    headerOnlyOnTheFirstPage, 
+                    reportFooterDataTemplate, 
+                    footerStartsFromTheSecondPage);
 
             FixedDocument fixedDocument = new FixedDocument();
 
@@ -266,15 +294,24 @@ namespace SimpleWPFReporting
             object dataContext, 
             Thickness margin, 
             Size reportSize, 
-            DataTemplate reportHeaderDataTemplate, 
-            DataTemplate reportFooterDataTemplate)
+            DataTemplate reportHeaderDataTemplate,
+            bool headerOnlyOnTheFirstPage,
+            DataTemplate reportFooterDataTemplate,
+            bool footerStartsFromTheSecondPage)
         {
             int pageNumber = 1;
 
             List<ReportPage> ReportPages = 
                 new List<ReportPage>
                 {
-                    new ReportPage(reportSize, reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber)
+                    new ReportPage(
+                        reportSize, 
+                        reportContainer, 
+                        margin, 
+                        dataContext, 
+                        reportHeaderDataTemplate,
+                        (footerStartsFromTheSecondPage) ? null : reportFooterDataTemplate, 
+                        pageNumber)
                 };
 
             foreach (FrameworkElement reportVisualElement in ReportElements)
@@ -283,7 +320,15 @@ namespace SimpleWPFReporting
                 {
                     pageNumber++;
 
-                    ReportPages.Add(new ReportPage(reportSize, reportContainer, margin, dataContext, reportHeaderDataTemplate, reportFooterDataTemplate, pageNumber));
+                    ReportPages.Add(
+                        new ReportPage(
+                            reportSize, 
+                            reportContainer, 
+                            margin, 
+                            dataContext, 
+                            (headerOnlyOnTheFirstPage) ? null : reportHeaderDataTemplate, 
+                            reportFooterDataTemplate, 
+                            pageNumber));
                 }
 
                 ReportPages.Last().AddElement(reportVisualElement);
