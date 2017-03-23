@@ -149,6 +149,7 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
+        /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -159,6 +160,7 @@ namespace SimpleWPFReporting
             Thickness margin, 
             ReportOrientation orientation,
             ResourceDictionary resourceDictionary = null,
+            Brush backgroundBrush = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -177,8 +179,8 @@ namespace SimpleWPFReporting
 
             List<ReportPage> ReportPages = 
                 GetReportPages(
-                    reportContainer,
                     resourceDictionary,
+                    backgroundBrush,
                     ReportElements, 
                     dataContext, 
                     margin, 
@@ -208,6 +210,7 @@ namespace SimpleWPFReporting
         /// <param name="dataContext">Data Context used in the report</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
+        /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -217,6 +220,7 @@ namespace SimpleWPFReporting
             object dataContext,
             ReportOrientation orientation,
             ResourceDictionary resourceDictionary = null,
+            Brush backgroundBrush = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -228,6 +232,7 @@ namespace SimpleWPFReporting
                 defaultMargin, 
                 orientation,
                 resourceDictionary,
+                backgroundBrush,
                 reportHeaderDataTemplate, 
                 headerOnlyOnTheFirstPage, 
                 reportFooterDataTemplate, 
@@ -242,6 +247,7 @@ namespace SimpleWPFReporting
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
+        /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -252,6 +258,7 @@ namespace SimpleWPFReporting
             Thickness margin, 
             ReportOrientation orientation,
             ResourceDictionary resourceDictionary = null,
+            Brush backgroundBrush = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -274,8 +281,8 @@ namespace SimpleWPFReporting
 
             List<ReportPage> ReportPages = 
                 GetReportPages(
-                    reportContainer,
                     resourceDictionary,
+                    backgroundBrush,
                     ReportElements, 
                     dataContext, 
                     margin, 
@@ -306,6 +313,7 @@ namespace SimpleWPFReporting
                         newFixedPage.Arrange(new Rect(reportSize));
                         newFixedPage.Width = newFixedPage.ActualWidth;
                         newFixedPage.Height = newFixedPage.ActualHeight;
+                        newFixedPage.Background = backgroundBrush;
                         newFixedPage.UpdateLayout();
 
                         PageContent pageContent = new PageContent();
@@ -338,6 +346,7 @@ namespace SimpleWPFReporting
         /// <param name="dataContext">Data Context used in the report</param> 
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
+        /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -347,6 +356,7 @@ namespace SimpleWPFReporting
             object dataContext,
             ReportOrientation orientation,
             ResourceDictionary resourceDictionary = null,
+            Brush backgroundBrush = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -358,6 +368,7 @@ namespace SimpleWPFReporting
                 defaultMargin, 
                 orientation,
                 resourceDictionary,
+                backgroundBrush,
                 reportHeaderDataTemplate, 
                 headerOnlyOnTheFirstPage,
                 reportFooterDataTemplate, 
@@ -365,8 +376,8 @@ namespace SimpleWPFReporting
         }
 
         private static List<ReportPage> GetReportPages(
-            StackPanel reportContainer,
             ResourceDictionary resourceDictionary,
+            Brush backgroundBrush,
             List<FrameworkElement> ReportElements, 
             object dataContext, 
             Thickness margin, 
@@ -382,8 +393,8 @@ namespace SimpleWPFReporting
                 new List<ReportPage>
                 {
                     new ReportPage(
-                        reportSize, 
-                        reportContainer, 
+                        reportSize,
+                        backgroundBrush, 
                         margin, 
                         dataContext,
                         resourceDictionary,
@@ -400,8 +411,8 @@ namespace SimpleWPFReporting
 
                     ReportPages.Add(
                         new ReportPage(
-                            reportSize, 
-                            reportContainer, 
+                            reportSize,
+                            backgroundBrush, 
                             margin, 
                             dataContext,
                             resourceDictionary,

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace SimpleWPFReporting
 {
@@ -13,8 +14,8 @@ namespace SimpleWPFReporting
         private readonly FrameworkElement reportFooter;
 
         internal ReportPage(
-            Size reportSize, 
-            StackPanel reportContainer, 
+            Size reportSize,
+            Brush backgroundBrush,
             Thickness margin, 
             object dataContext,
             ResourceDictionary resourceDictionary,
@@ -25,7 +26,7 @@ namespace SimpleWPFReporting
             layoutRootGrid = new Grid
             {
                 Margin = margin,
-                Background = reportContainer.Background,
+                Background = backgroundBrush,
                 Resources = resourceDictionary,
                 DataContext = dataContext,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
