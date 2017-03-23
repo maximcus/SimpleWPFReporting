@@ -19,6 +19,8 @@ namespace SimpleWPFReporting
     public static class Report
     {
         const int DIUPerInch = 96;
+        private static readonly Thickness defaultMargin = new Thickness(25);
+
         public static void ExportVisualAsXps(Visual visual)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -196,6 +198,37 @@ namespace SimpleWPFReporting
         }
 
         /// <summary>
+        /// Divides elements of reportContainer into pages and prints them
+        /// NOTE: this overload uses default margin of 25
+        /// </summary>
+        /// <param name="reportContainer">StackPanel containing report elements</param>
+        /// <param name="dataContext">Data Context used in the report</param>
+        /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
+        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
+        public static void PrintReport(
+            StackPanel reportContainer,
+            object dataContext,
+            ReportOrientation orientation,
+            DataTemplate reportHeaderDataTemplate = null,
+            bool headerOnlyOnTheFirstPage = false,
+            DataTemplate reportFooterDataTemplate = null,
+            bool footerStartsFromTheSecondPage = false)
+        {
+            PrintReport(
+                reportContainer: reportContainer, 
+                dataContext: dataContext, 
+                margin: defaultMargin, 
+                orientation: orientation, 
+                reportHeaderDataTemplate: reportHeaderDataTemplate, 
+                headerOnlyOnTheFirstPage: headerOnlyOnTheFirstPage, 
+                reportFooterDataTemplate: reportFooterDataTemplate, 
+                footerStartsFromTheSecondPage: footerStartsFromTheSecondPage);
+        }
+
+        /// <summary>
         /// Divides elements of reportContainer into pages and exports them as PDF
         /// </summary>
         /// <param name="reportContainer">StackPanel containing report elements</param>
@@ -286,6 +319,37 @@ namespace SimpleWPFReporting
                 ReportElements.ForEach(elm => reportContainer.Children.Add(elm));
                 reportContainer.UpdateLayout();
             }
+        }
+
+        /// <summary>
+        /// Divides elements of reportContainer into pages and exports them as PDF
+        /// NOTE: this overload uses default margin of 25
+        /// </summary>
+        /// <param name="reportContainer">StackPanel containing report elements</param>
+        /// <param name="dataContext">Data Context used in the report</param> 
+        /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
+        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
+        public static void ExportReportAsPdf(
+            StackPanel reportContainer,
+            object dataContext,
+            ReportOrientation orientation,
+            DataTemplate reportHeaderDataTemplate = null,
+            bool headerOnlyOnTheFirstPage = false,
+            DataTemplate reportFooterDataTemplate = null,
+            bool footerStartsFromTheSecondPage = false)
+        {
+            ExportReportAsPdf(
+                reportContainer, 
+                dataContext, 
+                defaultMargin, 
+                orientation, 
+                reportHeaderDataTemplate, 
+                headerOnlyOnTheFirstPage,
+                reportFooterDataTemplate, 
+                footerStartsFromTheSecondPage);
         }
 
         private static List<ReportPage> GetReportPages(
