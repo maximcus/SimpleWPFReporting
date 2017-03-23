@@ -14,7 +14,7 @@ PM> Install-Package SimpleWPFReporting
 
 ## How does it work
 
-This project gives you the ability to create any report with full power of WPF XAML. SimpleWPFReporting will take care of exporting it as PDF or printing it. The important point is that SimpleWPFReporting will not rasterize your report before exporting or printing.
+This project gives you the ability to create any report with the full power of WPF XAML. SimpleWPFReporting will take care of exporting it as PDF or printing it. The important point is that SimpleWPFReporting will not rasterize your report before exporting or printing.
 
 To be able to divide any report into pages this project expects that you will use vertical `StackPanel` as a report body. You should put your report elements into this `StackPanel`. SimpleWPFReporting accepts `StackPanel` as a parameter and automatically divides report elements into pages.
 
