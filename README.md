@@ -48,7 +48,7 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 ### Page number
 
-Every header and footer will be supplied with `PageNumber` DynamicResource. You can use it as you wish. For example, this is simplest possible footer DataTemplate:
+Every header and footer will be supplied with the `PageNumber` dynamic resource. You can use it as you wish. For example, this is the simplest possible footer DataTemplate:
 
 ```XML
 <DataTemplate x:Key="ReportFooterDataTemplate">
