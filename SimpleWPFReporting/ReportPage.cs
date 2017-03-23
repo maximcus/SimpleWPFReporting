@@ -24,9 +24,6 @@ namespace SimpleWPFReporting
                 VerticalAlignment = VerticalAlignment.Stretch
             };
 
-            layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             if (reportHeaderDataTemplate != null)
             {
@@ -35,12 +32,15 @@ namespace SimpleWPFReporting
                 if (reportHeader == null)
                     throw new Exception($"Couldn't cast content of {nameof(reportHeaderDataTemplate)} to {nameof(FrameworkElement)}");
 
-                AddPageNumberResource(reportHeader, pageNumber);
+                layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 Grid.SetRow(reportHeader, 0);
+
+                AddPageNumberResource(reportHeader, pageNumber);
                 layoutRootGrid.Children.Add(reportHeader);
             }
 
-            Grid.SetRow(stackPanel, 1);
+            layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(stackPanel, reportHeader == null ? 0 : 1);
             layoutRootGrid.Children.Add(stackPanel);
 
             if (reportFooterDataTemplate != null)
@@ -50,8 +50,10 @@ namespace SimpleWPFReporting
                 if (reportFooter == null)
                     throw new Exception($"Couldn't cast content of {nameof(reportFooterDataTemplate)} to {nameof(FrameworkElement)}");
 
+                layoutRootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                Grid.SetRow(reportFooter, reportHeader == null ? 1 : 2);
+
                 AddPageNumberResource(reportFooter, pageNumber);
-                Grid.SetRow(reportFooter, 2);
                 layoutRootGrid.Children.Add(reportFooter);
             }
 
