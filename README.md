@@ -14,9 +14,9 @@ PM> Install-Package SimpleWPFReporting
 
 ## How does it work
 
-This project gives you the ability to create any report with full power of WPF XAML. SimpleWPFReporting will take care of exporting it as PDF or printing. Important point is that SimpleWPFReporting will not rasterize your report before doing it.
+This project gives you the ability to create any report with full power of WPF XAML. SimpleWPFReporting will take care of exporting it as PDF or printing it. The important point is that SimpleWPFReporting will not rasterize your report before exporting or printing.
 
-To be able to divide any report into pages this project expects that you will use vertical `StackPanel` as a report body. In this `StackPanel` you should put your report elements. SimpleWPFReporting accepts this `StackPanel` as a parameter and automatically divides report elements into pages.
+To be able to divide any report into pages this project expects that you will use vertical `StackPanel` as a report body. You should put your report elements into this `StackPanel`. SimpleWPFReporting accepts `StackPanel` as a parameter and automatically divides report elements into pages.
 
 ## How to use it
 
@@ -30,7 +30,7 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 `Thickness margin` is the margin applied to every report page. Both of the methods have overloads without the margin argument. They use `Thickness(25)` as default margin.
 
-'ReportOrientation orientation' is the orientation (`Portrait` or `Landscape`) of your report. 
+`ReportOrientation orientation` is the orientation (`Portrait` or `Landscape`) of your report. 
 
 ### Optional arguments
 
