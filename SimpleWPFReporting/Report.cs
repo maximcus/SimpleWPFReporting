@@ -148,6 +148,7 @@ namespace SimpleWPFReporting
         /// <param name="dataContext">Data Context used in the report</param>
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -156,7 +157,8 @@ namespace SimpleWPFReporting
             StackPanel reportContainer, 
             object dataContext, 
             Thickness margin, 
-            ReportOrientation orientation, 
+            ReportOrientation orientation,
+            ResourceDictionary resourceDictionary = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -175,15 +177,16 @@ namespace SimpleWPFReporting
 
             List<ReportPage> ReportPages = 
                 GetReportPages(
-                    reportContainer: reportContainer, 
-                    ReportElements: ReportElements, 
-                    dataContext: dataContext, 
-                    margin: margin, 
-                    reportSize: reportSize, 
-                    reportHeaderDataTemplate: reportHeaderDataTemplate, 
-                    headerOnlyOnTheFirstPage: headerOnlyOnTheFirstPage, 
-                    reportFooterDataTemplate: reportFooterDataTemplate, 
-                    footerStartsFromTheSecondPage: footerStartsFromTheSecondPage);
+                    reportContainer,
+                    resourceDictionary,
+                    ReportElements, 
+                    dataContext, 
+                    margin, 
+                    reportSize, 
+                    reportHeaderDataTemplate, 
+                    headerOnlyOnTheFirstPage, 
+                    reportFooterDataTemplate, 
+                    footerStartsFromTheSecondPage);
 
             try
             {
@@ -204,6 +207,7 @@ namespace SimpleWPFReporting
         /// <param name="reportContainer">StackPanel containing report elements</param>
         /// <param name="dataContext">Data Context used in the report</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -212,20 +216,22 @@ namespace SimpleWPFReporting
             StackPanel reportContainer,
             object dataContext,
             ReportOrientation orientation,
+            ResourceDictionary resourceDictionary = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
             bool footerStartsFromTheSecondPage = false)
         {
             PrintReport(
-                reportContainer: reportContainer, 
-                dataContext: dataContext, 
-                margin: defaultMargin, 
-                orientation: orientation, 
-                reportHeaderDataTemplate: reportHeaderDataTemplate, 
-                headerOnlyOnTheFirstPage: headerOnlyOnTheFirstPage, 
-                reportFooterDataTemplate: reportFooterDataTemplate, 
-                footerStartsFromTheSecondPage: footerStartsFromTheSecondPage);
+                reportContainer, 
+                dataContext, 
+                defaultMargin, 
+                orientation,
+                resourceDictionary,
+                reportHeaderDataTemplate, 
+                headerOnlyOnTheFirstPage, 
+                reportFooterDataTemplate, 
+                footerStartsFromTheSecondPage);
         }
 
         /// <summary>
@@ -235,6 +241,7 @@ namespace SimpleWPFReporting
         /// <param name="dataContext">Data Context used in the report</param> 
         /// <param name="margin">Margin of a report page</param>
         /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -243,7 +250,8 @@ namespace SimpleWPFReporting
             StackPanel reportContainer, 
             object dataContext, 
             Thickness margin, 
-            ReportOrientation orientation, 
+            ReportOrientation orientation,
+            ResourceDictionary resourceDictionary = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -266,7 +274,8 @@ namespace SimpleWPFReporting
 
             List<ReportPage> ReportPages = 
                 GetReportPages(
-                    reportContainer, 
+                    reportContainer,
+                    resourceDictionary,
                     ReportElements, 
                     dataContext, 
                     margin, 
@@ -328,6 +337,7 @@ namespace SimpleWPFReporting
         /// <param name="reportContainer">StackPanel containing report elements</param>
         /// <param name="dataContext">Data Context used in the report</param> 
         /// <param name="orientation">Landscape or Portrait orientation</param>
+        /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
         /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
@@ -336,6 +346,7 @@ namespace SimpleWPFReporting
             StackPanel reportContainer,
             object dataContext,
             ReportOrientation orientation,
+            ResourceDictionary resourceDictionary = null,
             DataTemplate reportHeaderDataTemplate = null,
             bool headerOnlyOnTheFirstPage = false,
             DataTemplate reportFooterDataTemplate = null,
@@ -345,7 +356,8 @@ namespace SimpleWPFReporting
                 reportContainer, 
                 dataContext, 
                 defaultMargin, 
-                orientation, 
+                orientation,
+                resourceDictionary,
                 reportHeaderDataTemplate, 
                 headerOnlyOnTheFirstPage,
                 reportFooterDataTemplate, 
@@ -353,7 +365,8 @@ namespace SimpleWPFReporting
         }
 
         private static List<ReportPage> GetReportPages(
-            StackPanel reportContainer, 
+            StackPanel reportContainer,
+            ResourceDictionary resourceDictionary,
             List<FrameworkElement> ReportElements, 
             object dataContext, 
             Thickness margin, 
@@ -372,7 +385,8 @@ namespace SimpleWPFReporting
                         reportSize, 
                         reportContainer, 
                         margin, 
-                        dataContext, 
+                        dataContext,
+                        resourceDictionary,
                         reportHeaderDataTemplate,
                         (footerStartsFromTheSecondPage) ? null : reportFooterDataTemplate, 
                         pageNumber)
@@ -389,7 +403,8 @@ namespace SimpleWPFReporting
                             reportSize, 
                             reportContainer, 
                             margin, 
-                            dataContext, 
+                            dataContext,
+                            resourceDictionary,
                             (headerOnlyOnTheFirstPage) ? null : reportHeaderDataTemplate, 
                             reportFooterDataTemplate, 
                             pageNumber));

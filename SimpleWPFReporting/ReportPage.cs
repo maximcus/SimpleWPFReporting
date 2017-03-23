@@ -12,13 +12,21 @@ namespace SimpleWPFReporting
         private readonly FrameworkElement reportHeader;
         private readonly FrameworkElement reportFooter;
 
-        internal ReportPage(Size reportSize, StackPanel reportContainer, Thickness margin, object dataContext, DataTemplate reportHeaderDataTemplate, DataTemplate reportFooterDataTemplate, int pageNumber)
+        internal ReportPage(
+            Size reportSize, 
+            StackPanel reportContainer, 
+            Thickness margin, 
+            object dataContext,
+            ResourceDictionary resourceDictionary,
+            DataTemplate reportHeaderDataTemplate, 
+            DataTemplate reportFooterDataTemplate, 
+            int pageNumber)
         {
             layoutRootGrid = new Grid
             {
                 Margin = margin,
                 Background = reportContainer.Background,
-                Resources = reportContainer.Resources,
+                Resources = resourceDictionary,
                 DataContext = dataContext,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
