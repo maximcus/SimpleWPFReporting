@@ -14,6 +14,7 @@ using System.Windows.Xps.Packaging;
 using Microsoft.Win32;
 using PdfSharp.Xps;
 
+#pragma warning disable 1591
 namespace SimpleWPFReporting
 {
     public static class Report
@@ -150,9 +151,15 @@ namespace SimpleWPFReporting
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
-        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="reportHeaderDataTemplate">
+        /// Optional header for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
-        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="reportFooterDataTemplate">
+        /// Optional footer for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void PrintReport(
             StackPanel reportContainer, 
@@ -211,9 +218,15 @@ namespace SimpleWPFReporting
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
-        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="reportHeaderDataTemplate">
+        /// Optional header for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
-        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="reportFooterDataTemplate">
+        /// Optional footer for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void PrintReport(
             StackPanel reportContainer,
@@ -248,9 +261,15 @@ namespace SimpleWPFReporting
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
-        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="reportHeaderDataTemplate">
+        /// Optional header for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
-        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="reportFooterDataTemplate">
+        /// Optional footer for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void ExportReportAsPdf(
             StackPanel reportContainer, 
@@ -347,9 +366,15 @@ namespace SimpleWPFReporting
         /// <param name="orientation">Landscape or Portrait orientation</param>
         /// <param name="resourceDictionary">Resources used in report</param>
         /// <param name="backgroundBrush">Brush that will be used as background for report page</param>
-        /// <param name="reportHeaderDataTemplate">Optional header for each page</param>
+        /// <param name="reportHeaderDataTemplate">
+        /// Optional header for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="headerOnlyOnTheFirstPage">Use header only on the first page (default is false)</param>
-        /// <param name="reportFooterDataTemplate">Optional footer for each page</param>
+        /// <param name="reportFooterDataTemplate">
+        /// Optional footer for each page
+        /// Note: You can use DynamicResource PageNumber in this template to display page number
+        /// </param>
         /// <param name="footerStartsFromTheSecondPage">Do not use footer on the first page (default is false)</param> 
         public static void ExportReportAsPdf(
             StackPanel reportContainer,
@@ -469,4 +494,6 @@ namespace SimpleWPFReporting
         }
     }
 }
+#pragma warning restore 1591
+
 
