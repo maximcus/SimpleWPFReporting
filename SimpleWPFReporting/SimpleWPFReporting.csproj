@@ -32,11 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PdfSharp-WPF, Version=1.32.2608.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfSharp-WPF.Rovese.1.0.0\lib\net45\PdfSharp-WPF.dll</HintPath>
+      <HintPath>..\packages\PdfSharp-WPF.SimpleWPFReporting.1.0.0\lib\net45\PdfSharp-WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PdfSharp.Xps, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfSharp.Xps.Rovese.1.0.0\lib\net45\PdfSharp.Xps.dll</HintPath>
+      <HintPath>..\packages\PdfSharp.Xps.SimpleWPFReporting.1.0.0\lib\net45\PdfSharp.Xps.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
