@@ -34,7 +34,7 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 ### Optional arguments
 
-`ResourceDictionary resourceDictionary` contains all resources used in the report.
+`ResourceDictionary resourceDictionary` provides all the resources used in the report.
 
 `Brush backgroundBrush` is the background brush of the report.
 
