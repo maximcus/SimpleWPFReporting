@@ -14,9 +14,9 @@ PM> Install-Package SimpleWPFReporting
 
 ## How does it work
 
-This project gives you the ability to create any report with the full power of WPF XAML. SimpleWPFReporting will take care of exporting it as PDF or printing it. The important point is that SimpleWPFReporting will not rasterize your report before exporting or printing.
+This project gives you the ability to create any report with the full power of WPF XAML. SimpleWPFReporting will take care of exporting it as a PDF or printing it. The important point is that SimpleWPFReporting will not rasterize your report before exporting or printing it.
 
-To be able to divide any report into pages this project expects that you will use vertical `StackPanel` as a report body. You should put your report elements into this `StackPanel`. SimpleWPFReporting accepts `StackPanel` as a parameter and automatically divides report elements into pages.
+In order to be able to divide any report into pages this project expects that you will use a vertical `StackPanel` as your report body. You should put your report elements into this `StackPanel`. SimpleWPFReporting accepts `StackPanel` as a parameter and automatically divides report elements into pages.
 
 ## How to use it
 
@@ -28,7 +28,7 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 `object dataContext` is the data context of your report.
 
-`Thickness margin` is the margin applied to every report page. Both of the methods have overloads without the margin argument. They use `Thickness(25)` as the default margin.
+`Thickness margin` is the margin applied to every report page. Both of the methods have overloads without the margin argument. They use `Thickness(25)` as a default margin.
 
 `ReportOrientation orientation` is the orientation (`Portrait` or `Landscape`) of your report. 
 
@@ -40,11 +40,11 @@ The main API of SimpleWPFReporting consists of `Report` static class, `ExportRep
 
 `DataTemplate reportHeaderDataTemplate` is the `DataTemplate` used to create a header for every page of the report.
 
-`bool headerOnlyOnTheFirstPage` allows you to use the header only on the first page of the report. (default is false)
+`bool headerOnlyOnTheFirstPage` allows you to use a header only on the first page of the report. (default is false)
 
 `DataTemplate reportFooterDataTemplate`  is the `DataTemplate` used to create a footer for every page of the report.
 
-`bool footerStartsFromTheSecondPage` allows you to not use the footer on the first page of the report. (default is false)
+`bool footerStartsFromTheSecondPage` allows you to not use a footer on the first page of the report. (default is false)
 
 ### Page number
 
@@ -52,7 +52,7 @@ Every header and footer will be supplied with the `PageNumber` dynamic resource.
 
 ```XML
 <DataTemplate x:Key="ReportFooterDataTemplate">
-	<TextBlock Text="{DynamicResource PageNumber}" HorizontalAlignment="Right"/>
+ <TextBlock Text="{DynamicResource PageNumber}" HorizontalAlignment="Right"/>
 </DataTemplate>
 ```
 
