@@ -52,7 +52,7 @@ Every header and footer will be supplied with the `PageNumber` dynamic resource.
 
 ```XML
 <DataTemplate x:Key="ReportFooterDataTemplate">
- <TextBlock Text="{DynamicResource PageNumber}" HorizontalAlignment="Right"/>
+    <TextBlock Text="{DynamicResource PageNumber}" HorizontalAlignment="Right"/>
 </DataTemplate>
 ```
 
