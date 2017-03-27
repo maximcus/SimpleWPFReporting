@@ -58,10 +58,10 @@ Every header and footer will be supplied with the `PageNumber` dynamic resource.
 
 ## Example
 
-Report view:
+### Report view:
 ![Alt text](Files/input.png "Report View")
 
-Output PDF:
+### Output PDF:
 ![Alt text](Files/output1.png "Output PDF page 1")
 ![Alt text](Files/output2.png "Output PDF page 2")
 
