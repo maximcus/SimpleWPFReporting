@@ -65,6 +65,5 @@ Output PDF:
 ![Alt text](Files/output1.png "Output PDF page 1")
 ![Alt text](Files/output2.png "Output PDF page 2")
 
-As you can see there is no difference between input (XAML) and output (PDF) except  for paging. Also PDF is not rasterized, you can see for yourself: [pdf](Files/output.pdf).
-
-
+As you can see there is no difference between input (XAML) and output (PDF) except for paging. The subtle difference in the font weight and the width of the lines is due to artifacts of scaling of the screenshots. 
+PDF is not rasterized, as you can see for yourself: [pdf](Files/output.pdf).
