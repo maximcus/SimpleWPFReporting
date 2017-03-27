@@ -56,4 +56,15 @@ Every header and footer will be supplied with the `PageNumber` dynamic resource.
 </DataTemplate>
 ```
 
+## Example
+
+Report view:
+![Alt text](Files/Images/input.png "Report View")
+
+Output PDF:
+![Alt text](Files/Images/output1.png "Output PDF page 1")
+![Alt text](Files/Images/output2.png "Output PDF page 2")
+
+As you can see there is no difference between input (XAML) and output (PDF) except  for paging. Also PDF is not rasterized, you can see for yourself: [pdf](Files/output.pdf).
+
 
