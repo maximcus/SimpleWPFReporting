@@ -111,5 +111,28 @@ namespace SimpleWPFReporting
         {
             return elm.ActualHeight + elm.Margin.Top + elm.Margin.Bottom;
         }
+
+        internal void Scale(Size reportSize, PrintDialog printDialog)
+        {
+            double reportScale = GetReportScale(reportSize, printDialog);
+            layoutRootGrid.LayoutTransform = new ScaleTransform(reportScale, reportScale);
+            Size scaledReportSize = new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);
+
+            layoutRootGrid.Measure(scaledReportSize);
+            layoutRootGrid.Arrange(new Rect(scaledReportSize));
+            layoutRootGrid.UpdateLayout();
+        }
+
+        private static double GetReportScale(Size reportSize, PrintDialog printDialog)
+        {
+            if (reportSize.Width < printDialog.PrintableAreaWidth && reportSize.Height < printDialog.PrintableAreaHeight)
+                return 1;
+
+            double scale = Math.Min(printDialog.PrintableAreaWidth / reportSize.Width, printDialog.PrintableAreaHeight / reportSize.Height);
+
+            scale = scale - 0.015; // To make sure the report will fit to the page
+
+            return scale;
+        }
     }
 }

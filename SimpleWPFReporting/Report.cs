@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -199,6 +200,7 @@ namespace SimpleWPFReporting
 
             try
             {
+                ReportPages.ForEach(reportPage => reportPage.Scale(reportSize, printDialog));
                 ReportPages.ForEach((reportPage, index) => printDialog.PrintVisual(reportPage.LayoutRoot, $"Карточка Точки {index + 1}"));
             }
             finally
@@ -305,7 +307,7 @@ namespace SimpleWPFReporting
                     ReportElements, 
                     dataContext, 
                     margin, 
-                    reportSize, 
+                    reportSize,
                     reportHeaderDataTemplate, 
                     headerOnlyOnTheFirstPage, 
                     reportFooterDataTemplate, 
@@ -406,7 +408,7 @@ namespace SimpleWPFReporting
             List<FrameworkElement> ReportElements, 
             object dataContext, 
             Thickness margin, 
-            Size reportSize, 
+            Size reportSize,
             DataTemplate reportHeaderDataTemplate,
             bool headerOnlyOnTheFirstPage,
             DataTemplate reportFooterDataTemplate,
@@ -471,11 +473,10 @@ namespace SimpleWPFReporting
 
             double reportWidth = reportContainer.ActualWidth + margin.Left + margin.Right;
 
-            double reportHeight;
-            if (orientation == ReportOrientation.Portrait)
-                reportHeight = (reportWidth / printDialog.PrintableAreaWidth) * printDialog.PrintableAreaHeight;
-            else
-                reportHeight = (reportWidth / printDialog.PrintableAreaHeight) * printDialog.PrintableAreaWidth;
+            if (orientation == ReportOrientation.Landscape)
+                printDialog.PrintTicket.PageOrientation = PageOrientation.Landscape;
+
+            double reportHeight = (reportWidth / printDialog.PrintableAreaWidth) * printDialog.PrintableAreaHeight;
 
             return new Size(reportWidth, reportHeight);
         }
